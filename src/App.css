@@ -15,3 +15,27 @@
 h1{
   text-align: center;
 }
+
+form{
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+form div{
+  margin: 0.5rem 0;
+}
+
+form button{
+  width: 200px;
+  height: 30px;
+}
+
+div input, div textarea{
+  padding: 0.5rem;
+}
+
+.forms{
+  display: flex;
+  justify-content: space-between;
+}
