@@ -39,3 +39,14 @@ div input, div textarea{
   display: flex;
   justify-content: space-between;
 }
+
+.actions button {
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button img{
+  width: 30px;
+  cursor: pointer;
+}

@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import edit from '../public/edit.png'
+import like from '../public/like.png'
+import del from '../public/delete.png'
 
 const URL = `https://65a5126552f07a8b4a3e4af8.mockapi.io/API/Commerce`
 
 function App() {
   
   const [products, setProducts] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   useEffect(() => {
     const getProducts = async() => {
@@ -23,10 +27,50 @@ function App() {
     getProducts()
   }, [])
 
-  // функция изменения продукта
-  const handleEditProductSubmit  = async(e) => {
-    e.preventDefault()
+  const editProduct = (product) => {
+    setSelectedProduct(product)
   }
+
+  // функция изменения продукта
+  const handleEditProductSubmit = async (e) => {
+    e.preventDefault();
+  
+    const editedProduct = {
+      title: e.target.title.value,
+      description: e.target.description.value,
+      id: selectedProduct.id,
+      liked: selectedProduct.liked,
+    };
+
+    console.log(editedProduct);
+  
+    const response = await fetch(`${URL}/${selectedProduct.id}`, {
+      method: "PUT",
+      body: JSON.stringify({...selectedProduct, ...editedProduct}),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  
+    if (!response.ok) return 
+  
+    const editedProductFromServer = await response.json();
+  
+    setProducts(
+      products.map((product) => {
+        if (product.id === editedProductFromServer.id) {
+          return editedProductFromServer;
+        }
+  
+        return product;
+      })
+    );
+  
+    e.target.title.value = "";
+    e.target.description.value = "";
+  
+    return true;
+  };
 
   // функция добавления нового продукта
   const handleAddProductSubmit  = async(e) => {
@@ -66,7 +110,7 @@ function App() {
       <div className='forms'>
 
         {/* Форма изменеиня данных */}
-        <form action="" onSubmit={handleEditProductSubmit }>
+        <form action="" onSubmit={handleEditProductSubmit} name='editProduct'>
           <h2>Edit</h2>
           <div>
             <input type="text" name='title'/> 
@@ -78,7 +122,7 @@ function App() {
         </form>
 
         {/* Форма добавления данных */}
-        <form action="" onSubmit={handleAddProductSubmit }>
+        <form action="" onSubmit={handleAddProductSubmit} name='addProduct'>
           <h2>Add</h2>
           <div>
             <input type="text" name='title'/> 
@@ -97,7 +141,15 @@ function App() {
           <div key={product.id} className='product'>
             <h3>{product.title}</h3>
             <p>{product.description}</p>
+
+            <div className='actions'>
+              <button onClick={() => editProduct(product)}>
+                <img src={edit} alt="" />
+              </button>
+            </div>
           </div>
+
+          
         )
       })}
     </div>
