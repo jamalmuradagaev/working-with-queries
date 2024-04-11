@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import edit from '../public/edit.png'
 import like from '../public/like.png'
+import dontLike from '../public/dontLike.png'
 import del from '../public/delete.png'
 
 const URL = `https://65a5126552f07a8b4a3e4af8.mockapi.io/API/Commerce`
@@ -11,6 +12,7 @@ function App() {
   const [products, setProducts] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
 
+  // получение данных из сервера
   useEffect(() => {
     const getProducts = async() => {
       try {
@@ -27,6 +29,52 @@ function App() {
     getProducts()
   }, [])
 
+  // функция добавления продукта в понравившиеся
+  const likeProduct = async (product) => {
+    //
+    product.liked = !product.liked;
+
+    const response = await fetch(`${URL}/${product.id}`, {
+      method: "PUT",
+      body: JSON.stringify(product),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) return;
+
+    const updatedProduct = await response.json();
+
+    setProducts(
+      products.map((product) => {
+        if (product.id === updatedProduct.id) {
+          return updatedProduct;
+        }
+
+        return product;
+      })
+    );
+    //
+  };
+
+  // функция удаления продукта
+  const deleteProduct = async (id) => {
+    const shouldDelete = confirm();
+
+    if (!shouldDelete) return;
+
+    const response = await fetch(`${URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) return;
+
+    const deletedProduct = await response.json();
+
+    setProducts(products.filter((product) => deletedProduct.id !== product.id));
+  };
+
   const editProduct = (product) => {
     setSelectedProduct(product)
   }
@@ -41,8 +89,6 @@ function App() {
       id: selectedProduct.id,
       liked: selectedProduct.liked,
     };
-
-    console.log(editedProduct);
   
     const response = await fetch(`${URL}/${selectedProduct.id}`, {
       method: "PUT",
@@ -143,9 +189,24 @@ function App() {
             <p>{product.description}</p>
 
             <div className='actions'>
+
               <button onClick={() => editProduct(product)}>
                 <img src={edit} alt="" />
               </button>
+
+              <button onClick={() => likeProduct(product)}>
+                {product.liked && (
+                  <img src={like} alt="" />
+                )}
+                {!product.liked && (
+                  <img src={dontLike} alt="" />
+                )}
+              </button>
+
+              <button onClick={() =>  deleteProduct(product.id)}>
+                <img src={del} alt="" />
+              </button>
+
             </div>
           </div>
 
