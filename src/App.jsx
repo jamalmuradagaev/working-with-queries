@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Form from './Form'
 import './App.css'
 import edit from '../public/edit.png'
 import like from '../public/like.png'
@@ -56,6 +57,7 @@ function App() {
       })
     );
     //
+    return true
   };
 
   // функция удаления продукта
@@ -73,6 +75,8 @@ function App() {
     const deletedProduct = await response.json();
 
     setProducts(products.filter((product) => deletedProduct.id !== product.id));
+
+    return true
   };
 
   const editProduct = (product) => {
@@ -147,7 +151,6 @@ function App() {
 
     return true
   }
-  
 
   return (
     <div className='app'>
@@ -156,7 +159,8 @@ function App() {
       <div className='forms'>
 
         {/* Форма изменеиня данных */}
-        <form action="" onSubmit={handleEditProductSubmit} name='editProduct'>
+        <Form onSubmit={handleEditProductSubmit} name='editProduct'/>
+        {/* <Form action="" onSubmit={handleEditProductSubmit} name='editProduct'>
           <h2>Edit</h2>
           <div>
             <input type="text" name='title'/> 
@@ -165,10 +169,11 @@ function App() {
             <textarea name="description" id="" cols="30" rows="10"></textarea>
           </div>
           <button>Submit</button>
-        </form>
+        </Form> */}
 
         {/* Форма добавления данных */}
-        <form action="" onSubmit={handleAddProductSubmit} name='addProduct'>
+        <Form onSubmit={handleAddProductSubmit} name='addProduct'/>
+        {/* <form action="" onSubmit={handleAddProductSubmit} name='addProduct'>
           <h2>Add</h2>
           <div>
             <input type="text" name='title'/> 
@@ -177,7 +182,7 @@ function App() {
             <textarea name="description" id="" cols="30" rows="10"></textarea>
           </div>
           <button>Submit</button>
-        </form>
+        </form> */}
 
       </div>
 
