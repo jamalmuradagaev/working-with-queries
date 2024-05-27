@@ -4,7 +4,7 @@ import styled from 'styled-components'
 export default function Form({ onSubmit, name }) {
     return (
         <StyledForm action="" onSubmit={onSubmit} name={name}>
-            <h2>Add</h2>
+            <h2>{name}</h2>
             <div>
                 <input type="text" name='title' />
             </div>
